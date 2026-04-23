@@ -2,7 +2,7 @@
 
 ---
 
-## 1. What is Networking
+## 1. What is Networking ?
 
 - **Networking** is connecting computers and devices to share data and resources.  
 - Networks can be **LAN (Local Area Network)**, **WAN (Wide Area Network)**, **PAN (Personal Area Network)**, or **MAN (Metropolitan Area Network)**, depending on geographic scope.  
@@ -165,3 +165,159 @@
 - Examples: web browsing, email, file transfers, resolving domain names to IP addresses  
 
 > **Personal Note:** Seeing how different email clients interpret the same data made me appreciate the importance of standard protocols.
+
+---
+
+## 4. Packets & Frames
+
+### 4.1 What are Packets and Frames
+
+- Packets and frames are small pieces of data that, when combined, form a larger message or piece of information.  
+- A **packet** is a piece of data from **Layer 3 (Network Layer)** of the OSI model. It contains information such as an **IP header** and payload.  
+- A **frame** is used at **Layer 2 (Data Link Layer)**. It encapsulates the packet and adds additional information, such as **MAC addresses**.  
+
+### Analogy
+- Think of sending a letter through the post:  
+  - **Envelope = Frame**  
+  - **Letter inside = Packet**  
+- Encapsulation is the process of wrapping a packet with a frame for transmission. Once the frame is removed, the device sees the original packet.  
+
+### Why Packets & Frames Matter
+- Sending data in small pieces is more efficient than sending large messages at once.  
+- Example: When loading an image from a website, the image is sent in small packets and reconstructed on your computer.  
+
+### Packet Headers (IP Example)
+| Header                  | Description                                                                                     |
+|-------------------------|-------------------------------------------------------------------------------------------------|
+| **Time to Live (TTL)**  | Prevents packets from circulating forever by setting an expiry timer                            |
+| **Checksum**            | Ensures the packet hasn’t been corrupted during transmission                                    |
+| **Source Address**      | The IP address of the device sending the packet                                                 |
+| **Destination Address** | The IP address of the device that should receive the packet                                     |
+
+> Packets and frames allow networks to efficiently move data between devices without clogging the system.
+
+## 4.2 TCP & the Three-Way Handshake
+
+- **TCP (Transmission Control Protocol)** ensures reliable communication between devices.
+- Before sending data, TCP establishes a connection between a **client** and a **server** using a **Three-Way Handshake**.
+
+### TCP Packet Headers
+| Header                     | Description                                      |
+|----------------------------|--------------------------------------------------|
+| **Source Port**            | Port number of the sender                        |
+| **Destination Port**       | Port number of the receiver (e.g., 80 for HTTP)  |
+| **Source IP**              | IP address of the sender                         |
+| **Destination IP**         | IP address of the receiver                       |
+| **Sequence Number**        | Initial number for data ordering                 |
+| **Acknowledgement Number** | Next expected sequence number                    |
+| **Checksum**               | Verifies data integrity                          |
+| **Data**                   | The actual information being sent                |
+| **Flags**                  | Control communication (SYN, ACK, FIN, RST)       |
+
+### Three-Way Handshake Steps
+1. **SYN (Synchronize)** – Client sends initial sequence number to start connection  
+2. **SYN/ACK (Synchronize & Acknowledge)** – Server acknowledges client’s SYN and sends its own sequence number  
+3. **ACK (Acknowledge)** – Client confirms server’s sequence number; connection is established  
+
+> Once the handshake is complete, data transfer can begin.
+
+### Closing a TCP Connection
+- **FIN (Finish)** – initiates graceful connection termination  
+- **ACK (Acknowledge)** – confirms closure  
+- **RST (Reset)** – forcefully terminates connection if needed  
+
+### Advantages of TCP
+- Guarantees data delivery and order  
+- Provides error checking and retransmission  
+- Synchronizes sender and receiver to prevent flooding  
+
+### Disadvantages of TCP
+- Requires more overhead and processing  
+- Slower than UDP due to connection setup and reliability features  
+- Connection requires resources and can bottleneck slower networks  
+
+### Example
+- Client sends **SYN** with ISN = 0  
+- Server replies **SYN/ACK** with ISN = 5000, ACK = 1  
+- Client sends **ACK** with sequence number = 1
+
+> This ensures both sides know the sequence numbers and can reliably exchange data.
+
+## 4.3 User Datagram Protocol (UDP)
+
+- **UDP (User Datagram Protocol)** is a stateless protocol used for sending data between devices.
+- Unlike TCP, UDP does **not** require a constant connection and does **not** use the three-way handshake.
+- There is no synchronization or guarantee that data will be received, making it suitable for applications where some data loss is tolerable.
+
+### Use Cases
+- Video streaming  
+- Voice over IP (VoIP)  
+- Device discovery protocols (e.g., ARP, DHCP)  
+
+### Advantages of UDP
+- Much faster than TCP.  
+- Allows applications to control the sending speed.  
+- Does not reserve continuous connections.  
+
+### Disadvantages of UDP
+- Does not guarantee delivery.  
+- No built-in reliability or error checking.  
+- Unstable connections can cause poor user experience.  
+
+> No connection setup or teardown is required. Data is sent “as is.”
+
+### UDP Packet Structure
+UDP packets are simpler than TCP packets and have fewer headers, but they share some standard fields:
+
+| Header                 | Description                                                              |
+|------------------------|--------------------------------------------------------------------------|
+| **Time to Live (TTL)** | Sets an expiry timer so packets do not clog the network if undelivered   |
+| **Source Address**     | IP address of the sending device                                         |
+| **Destination Address**| IP address of the receiving device                                       |
+| **Source Port**        | Randomly chosen port used to send the UDP packet                         |
+| **Destination Port**   | Port of the application/service on the remote device (e.g., 80 for HTTP) |
+| **Data**               | The actual data (bytes of a file, message, etc.) being transmitted       |
+
+### Key Points
+- UDP is **stateless**: no acknowledgments or guarantees.  
+- Data is sent in **datagrams**, not streams.  
+- Faster but less reliable than TCP.
+
+> Example: A UDP connection between Alice and Bob allows messages to be sent without waiting for acknowledgments, suitable for applications like streaming video or voice chat.
+
+## 4.4 Ports in Networking
+
+- **Ports** are numerical values used to direct data to the correct application on a device.  
+- They range from **0 to 65535**.  
+- Think of a port like a dock at a harbor: only compatible ships can use it, just like only compatible applications can communicate through a port.
+
+### Why Ports Matter
+- Ports ensure that data is delivered to the correct application.  
+- Applications, software, and services follow standardized ports for consistency.  
+- Example: All web browsers send HTTP traffic over **port 80**. This allows different browsers like Chrome and Firefox to interpret the data consistently.
+
+### Common Ports and Their Protocols
+- **FTP (File Transfer Protocol) – Port 21**  
+  Used for transferring files on a client-server model.  
+
+- **SSH (Secure Shell) – Port 22**  
+  Provides secure login to systems via a text-based interface.  
+
+- **HTTP (HyperText Transfer Protocol) – Port 80**  
+  Powers the World Wide Web; used to download web pages such as text, images, and videos.  
+
+- **HTTPS (HTTP Secure) – Port 443**  
+  Functions like HTTP but encrypted, ensuring secure communication over the web.  
+
+- **SMB (Server Message Block) – Port 445**  
+  Enables sharing of files and devices like printers across a network.  
+
+- **RDP (Remote Desktop Protocol) – Port 3389**  
+  Provides a secure graphical login to a remote system.  
+
+### Key Notes
+- Ports **0–1024** are commonly known as **well-known ports**.  
+- Applications can use non-standard ports (e.g., a web server on **8080**), but users must specify the port explicitly (`example.com:8080`).  
+- Standardization ensures that applications can communicate reliably across different devices and platforms.  
+
+> Ports are essential for organizing network traffic and ensuring the right data reaches the correct application.
